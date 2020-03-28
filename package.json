@@ -1,0 +1,65 @@
+{
+  "name": "@coriolis/coriolis-svelte",
+  "version": "1.0.0-alpha1",
+  "description": "Coriolis wrapper for Svelte",
+  "license": "GPL-3.0",
+  "author": "Nicolas Deveaud",
+  "repository": "github:coriolisjs/coriolis-svelte",
+  "bugs": "https://github.com/coriolisjs/coriolis-svelte/issues",
+  "keywords": [
+    "coriolis",
+    "event",
+    "eventsourcing",
+    "effect",
+    "aggregate",
+    "projection",
+    "reducer",
+    "predictable",
+    "functional",
+    "immutable",
+    "hot",
+    "live",
+    "replay",
+    "store",
+    "svelte"
+  ],
+  "main": "cjs/provideStore.js",
+  "type": "module",
+  "sideEffects": false,
+  "module": "provideStore.js",
+  "files": [
+    "cjs",
+    "provideStore.js"
+  ],
+  "scripts": {
+    "clear:all": "rm -rf node_modules",
+    "clear": "rm -rf cjs",
+    "lint": "eslint .",
+    "pretty": "prettier './**/{*.{js?(on),md,?(s)css,html},.*.{js?(on),md,?(s)css,html}}' --write && eslint . --fix",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c",
+    "autobuild": "rollup -c -w",
+    "prepublishOnly": "npm run lint && npm outdated && npm run clear && npm run build && git tag ${VERSION} && git push origin ${VERSION}",
+    "publish:local": "VERSION=${npm_package_version}-local npm publish --registry http://localhost:4873",
+    "publish:npm": "VERSION=${npm_package_version} npm publish --registry https://registry.npmjs.org --access public"
+  },
+  "peerDependencies": {
+    "svelte": "3.x"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "prettier": "^2.0.2",
+    "rollup": "^2.2.0",
+    "rollup-plugin-babel": "^4.4.0"
+  }
+}
