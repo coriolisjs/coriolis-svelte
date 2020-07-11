@@ -58,7 +58,6 @@ const uiEffect = ({ dispatchEvent, withProjection }) => {
 }
 
 createStore(uiEffect)
-
 ```
 
 This example is not the most useful code sample, but you should give a try to both Coriolis and Svelte projects
