@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-unresolved
 import { getContext, setContext } from 'svelte'
 
-const KEY_GET_SOURCE = 'Coriolis store reference withProjection'
-const KEY_DISPATCH = 'Coriolis store reference dispatch'
+const KEY_GET_SOURCE = 'Coriolis store reference: withProjection'
+const KEY_DISPATCH = 'Coriolis store reference: dispatch'
 
 export const withProjection = (...args) => getContext(KEY_GET_SOURCE)(...args)
 
@@ -19,7 +19,7 @@ export const createStoreAPIProvider = () => {
 
   const shareStoreAPI = () => {
     if (!receivedStoreAPI) {
-      throw new Error('Store API to share has not been set')
+      throw new Error('Store API has not been set.')
     }
 
     const { dispatch, withProjection } = receivedStoreAPI
