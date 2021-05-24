@@ -1,35 +1,65 @@
 // eslint-disable-next-line import/no-unresolved
 import { getContext, setContext } from 'svelte'
 
-const KEY_GET_SOURCE = 'Coriolis store reference: withProjection'
-const KEY_DISPATCH = 'Coriolis store reference: dispatch'
+const KEY_STORE_API = 'Coriolis store reference'
 
-export const withProjection = (...args) => getContext(KEY_GET_SOURCE)(...args)
+export const withProjection = (...args) =>
+  getContext(KEY_STORE_API).withProjection(...args)
+
+export const getDispatch = () => getContext(KEY_STORE_API).dispatch
 
 export const createDispatch = (builder) => {
-  const dispatch = getContext(KEY_DISPATCH)
+  const dispatch = getDispatch()
   return (...args) => dispatch(builder(...args))
 }
 
 export const createStoreAPIProvider = () => {
-  let receivedStoreAPI
+  let registeredStoreAPI
+  let storeAPIListener
+  let resolveRegisterPromise
+
+  const whenStoreAPIShared = new Promise((resolve) => {
+    resolveRegisterPromise = resolve
+  })
+
+  const proxyStoreAPI = {
+    withProjection: () => {
+      throw new Error('Store API withProjection has not been set yet')
+    },
+    dispatch: () => {
+      throw new Error('Store API dispatch has not been set yet')
+    },
+  }
+
+  const checkRegistered = () => {
+    if (!registeredStoreAPI || !storeAPIListener) {
+      return
+    }
+
+    storeAPIListener(registeredStoreAPI)
+    resolveRegisterPromise()
+  }
+
   const setStoreAPI = (storeAPI) => {
-    receivedStoreAPI = storeAPI
+    registeredStoreAPI = storeAPI
+    checkRegistered()
   }
 
   const shareStoreAPI = () => {
-    if (!receivedStoreAPI) {
-      throw new Error('Store API has not been set.')
+    setContext(KEY_STORE_API, proxyStoreAPI)
+
+    storeAPIListener = ({ dispatch, withProjection }) => {
+      proxyStoreAPI.withProjection = withProjection
+      proxyStoreAPI.dispatch = dispatch
     }
+    checkRegistered()
 
-    const { dispatch, withProjection } = receivedStoreAPI
-
-    setContext(KEY_GET_SOURCE, withProjection)
-    setContext(KEY_DISPATCH, dispatch)
+    return whenStoreAPIShared
   }
 
   return {
     setStoreAPI,
     shareStoreAPI,
+    whenStoreAPIShared,
   }
 }
